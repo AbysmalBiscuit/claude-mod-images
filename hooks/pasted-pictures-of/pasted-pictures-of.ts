@@ -34,6 +34,13 @@ export const pastedPicturesOf = (
   }
 
   const images = message.content.filter(block => isRecord(block) && block.type === 'image')
+  // Claude Code keys a prompt's pastes by id and sends their blocks in id
+  // order, whatever order the markers take in the text.
+  const numbers = [...new Set(Array.from(text.matchAll(/\[Image #(\d+)\]/g), ([, number]) => Number(number)))].sort(
+    (a, b) => a - b,
+  )
 
-  return images.flatMap((block, at) => pictureOfBlock(block, `${requestId}#${at}`, `Image #${at + 1}`) ?? [])
+  return images.flatMap(
+    (block, at) => pictureOfBlock(block, `${requestId}#${at}`, `Image #${numbers[at] ?? at + 1}`) ?? [],
+  )
 }
