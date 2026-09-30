@@ -14,8 +14,9 @@ by side under the line.
 ![Claude reads a latency chart and a fractal, which draw under the Read line; a click hides the fractal and its caption shows it again; a pasted sunset draws under its prompt; /images off and on.](docs/demo.gif)
 
 It draws through Claude Code's own terminal `Image` element, which speaks the
-kitty graphics protocol. That works in kitty and Ghostty. Other terminals get
-the `alt` text (`photo.png · 800×800`).
+kitty graphics protocol. That works in kitty and Ghostty, and in alacritree
+with one more variable (see [alacritree](#alacritree)). Other terminals get
+the `alt` text (`photo.png · 800×800`), unless that variable forces images on.
 
 Click a picture to hide it. Its caption stays (`▸ photo.png · 800×800`);
 click the caption to show the picture again. Clicking the caption of a shown
@@ -41,7 +42,7 @@ over a picture.
 In Claude Code:
 
 ```
-/plugin marketplace add adamNewell/claude-mod-images
+/plugin marketplace add AbysmalBiscuit/claude-mod-images
 /plugin install images@claude-mod-images
 ```
 
@@ -50,6 +51,29 @@ Or load a clone for one session only:
 ```sh
 claude --plugin-dir /path/to/claude-mod-images
 ```
+
+### alacritree
+
+alacritree draws kitty images in its panes, in WSL and on Windows, but Claude
+Code turns its images on only for a terminal it knows by name. Switch them on
+next to function hooks in `~/.claude/settings.json`:
+
+```json
+{
+  "env": {
+    "CLAUDE_CODE_ENABLE_FUNCTION_HOOKS": "1",
+    "CLAUDE_CODE_FORCE_TERMINAL_IMAGES": "1"
+  }
+}
+```
+
+Without the second variable, pictures fall back to their `alt` text. The
+variable applies to every terminal `claude` runs in: inside tmux, and in
+terminals without the kitty graphics protocol, where a picture prints as rows
+of boxes.
+
+WSL and Windows keep separate `~/.claude` directories, so install the plugin
+and set these variables in each one that runs `claude`.
 
 ## Use
 
