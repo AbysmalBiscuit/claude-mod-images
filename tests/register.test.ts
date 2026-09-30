@@ -235,6 +235,37 @@ describe('register', () => {
     expect((await ui.find({ type: 'Button' }))?.key).toBe('message-1#0')
   })
 
+  test("pasted images are named by their prompt's markers, in the paste order the blocks keep", async ($, on) => {
+    engineRow(on)
+    const text = '[Image #4] after [Image #3], compare these'
+    on('session.messages', () => ({
+      value: [
+        {
+          role: 'user' as const,
+          content: [
+            { type: 'text', text },
+            { type: 'image', source: { type: 'base64', media_type: 'image/png', data: TINY_PNG } },
+            { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: TINY_JPEG } },
+          ],
+        },
+      ],
+    }))
+
+    const ui = await $.ui.mount({
+      plugin: 'images',
+      surface: 'terminal',
+      component: 'UserMessage',
+      requestId: 'message-3',
+      props: { text, origin: { kind: 'composer' }, isExpanded: false },
+      viewport: VIEWPORT,
+    })
+
+    expect((await ui.findAll({ type: 'Image' })).map(image => image.props.alt)).toEqual([
+      'Image #3 · 16×12',
+      'Image #4 · 16×12',
+    ])
+  })
+
   test('a prompt whose message is not stored yet draws its row alone', async ($, on) => {
     engineRow(on)
     on('session.messages', () => ({ value: [] }))
