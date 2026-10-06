@@ -9,7 +9,7 @@
       "name": "images",
       "source": "./",
       "description": "Draws pictures in the terminal transcript over the kitty graphics protocol: Read results, MCP tool images, and pasted images; a click hides one.",
-      "version": "0.1.0"
+      "version": "0.1.1"
     }
   ]
 }
