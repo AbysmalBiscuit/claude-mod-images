@@ -103,13 +103,13 @@ async function withPictures(
     return drawn
   }
 
-  const { Box, Button, Client, Text, Image } = $.ui.resolve(e)
+  const { Box, Button, Text, Image } = $.ui.resolve(e)
   const shown = await shownOf($, held.drawables, pictures)
 
   return (
     <Box flexDirection="column">
       {drawn}
-      {picturesView({ Box, Button, Client, Text, Image }, shown, roomOf(e.viewport, held.maxRows))}
+      {picturesView({ Box, Button, Text, Image }, shown, roomOf(e.viewport, held.maxRows))}
     </Box>
   )
 }
@@ -117,12 +117,11 @@ async function withPictures(
 /**
  * Registers the pictures on the terminal: under a Read or MCP row that
  * returned images, under a collapsed group's line for each such call, and
- * under a prompt for each image pasted into it; a click on one, or on its
- * caption, hides it, and its caption shows it again. `/images` stops and
- * starts them all for the session.
+ * under a prompt for each image pasted into it. Pressing a caption toggles
+ * its picture, and `/images` stops and starts them all for the session.
  *
  * An expanded group draws its calls as `ToolUse` rows, so each picture draws
- * once whichever way its call is shown, hidden or not in both.
+ * once whichever way its call is shown.
  *
  * @param on the engine's registrar
  * @param options `maxRows`, the tallest a picture draws, caption included
@@ -173,12 +172,4 @@ export function register(on: On, options: PluginOptions) {
       return withPictures($, e, drawn, await pastedOf($, held.pasted, e.requestId, e.props.text), held)
     },
   )
-
-  on('ui.message', { surface: 'terminal', module: 'hooks/click-to-hide.tsx' }, async ($, e, next) => {
-    if (typeof e.data === 'string') {
-      await toggle($, e.data)
-    }
-
-    return next(e)
-  })
 }

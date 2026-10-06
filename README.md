@@ -18,9 +18,10 @@ kitty graphics protocol. That works in kitty and Ghostty, and in alacritree
 with one more variable (see [alacritree](#alacritree)). Other terminals get
 the `alt` text (`photo.png · 800×800`), unless that variable forces images on.
 
-Click a picture to hide it. Its caption stays (`▸ photo.png · 800×800`);
-click the caption to show the picture again. Clicking the caption of a shown
-picture (`▾`) hides it too. A picture hidden under a group's line stays
+Click a picture's caption (`▾ photo.png · 800×800`) to hide it. The caption
+stays (`▸ photo.png · 800×800`); click it again to show the picture. A
+drag over a picture selects transcript text as it does anywhere else. A
+picture hidden under a group's line stays
 hidden on its own row in the ctrl+o transcript. The mouse wheel still scrolls
 over a picture.
 
@@ -77,7 +78,7 @@ and set these variables in each one that runs `claude`.
 
 ## Use
 
-- **Click a picture** to hide it; click its caption to show it again.
+- **Click a picture's caption** to hide it; click it again to show it.
 - **`/images off`** stops every picture for the session, **`/images on`**
   brings them back, and a bare **`/images`** flips between the two. It is the
   way to hide pictures on the main screen, where clicks don't reach them,
@@ -112,15 +113,6 @@ Known limits:
   drops a paste from the conversation, its prompt draws no picture.
 - **MCP images by URL** (`source.type: 'url'`) are not fetched. Only base64
   image blocks draw.
-
-## How the click works
-
-`Image` is a leaf with no press handler. Text drawn over it would replace the
-placeholder cells that carry its pixels. So each picture has a `Client`
-region (`hooks/click-to-hide.tsx`) laid over it that draws nothing. The
-pixels show through, and the region hears the pointer. A left press and
-release inside it posts the picture's id, and a `ui.message` hook flips its
-`isHidden` state.
 
 ## Develop
 

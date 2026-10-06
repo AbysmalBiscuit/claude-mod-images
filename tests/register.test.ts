@@ -165,32 +165,6 @@ describe('register', () => {
     expect(await (await mountRow($, row)).find({ type: 'Image' })).toBeUndefined()
   })
 
-  test('a click on the picture hides it', async ($, on) => {
-    engineRow(on)
-    const ui = await mountRow($, readRow('click', 'image/png', TINY_PNG))
-    const target = { in: 'click click#0' }
-
-    await ui.resize({ columns: 2, rows: 1, ...target })
-    await ui.pointer({ type: 'down', x: 1, y: 0, button: 'left', ...target })
-    await ui.pointer({ type: 'up', x: 1, y: 0, button: 'left', ...target })
-
-    expect(await ui.find({ type: 'Image' })).toBeUndefined()
-  })
-
-  test('a press dragged off the picture, or a right click, leaves it shown', async ($, on) => {
-    engineRow(on)
-    const ui = await mountRow($, readRow('drag', 'image/png', TINY_PNG))
-    const target = { in: 'click drag#0' }
-
-    await ui.resize({ columns: 2, rows: 1, ...target })
-    await ui.pointer({ type: 'down', x: 0, y: 0, button: 'left', ...target })
-    await ui.pointer({ type: 'up', x: 9, y: 3, button: 'left', ...target })
-    await ui.pointer({ type: 'down', x: 0, y: 0, button: 'right', ...target })
-    await ui.pointer({ type: 'up', x: 0, y: 0, button: 'right', ...target })
-
-    expect(await ui.find({ type: 'Image' })).toBeDefined()
-  })
-
   test("an MCP tool's image blocks draw under its row, each named for the tool", async ($, on) => {
     engineRow(on)
     const image = { type: 'image', source: { type: 'base64', media_type: 'image/png', data: TINY_PNG } }

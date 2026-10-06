@@ -19,11 +19,7 @@ export type Shown = {
 /**
  * The pictures in a row under a transcript row, wrapping at its width: each
  * an Image over a caption that hides and shows it (`▾` shown, `▸` hidden),
- * or a dim line saying why it is not drawn. A click on the picture hides it.
- *
- * An Image is a leaf with no handler, and text over its cells would replace
- * the placeholders that carry its pixels: the click lands on a `Client` laid
- * over it that draws nothing (`click-to-hide.tsx`).
+ * or a dim line saying why it is not drawn.
  *
  * @param ui the terminal's elements, from `$.ui.resolve(e)`
  * @param pictures the pictures, in the order their calls ran
@@ -31,11 +27,11 @@ export type Shown = {
  * @returns the drawing to place under the row
  */
 export const picturesView = (
-  ui: Pick<Elements['terminal'], 'Box' | 'Button' | 'Client' | 'Text' | 'Image'>,
+  ui: Pick<Elements['terminal'], 'Box' | 'Button' | 'Text' | 'Image'>,
   pictures: ReadonlyArray<Shown>,
   room: Cells,
 ): RenderNode => {
-  const { Box, Button, Client, Text, Image } = ui
+  const { Box, Button, Text, Image } = ui
 
   return (
     <Box flexDirection="row" flexWrap="wrap" columnGap={1} paddingLeft={INDENT_COLUMNS}>
@@ -49,20 +45,7 @@ export const picturesView = (
 
         return (
           <Box flexDirection="column">
-            {isHidden ? null : (
-              <Box width={cells.columns} height={cells.rows}>
-                <Image source={drawable.source} {...cells} alt={caption} />
-                <Box position="absolute" top={0} left={0}>
-                  <Client
-                    key={`click ${id}`}
-                    module="../click-to-hide.tsx"
-                    props={id}
-                    width={cells.columns}
-                    height={cells.rows}
-                  />
-                </Box>
-              </Box>
-            )}
+            {isHidden ? null : <Image source={drawable.source} {...cells} alt={caption} />}
             <Button key={id} plain dimColor label={`${isHidden ? '▸' : '▾'} ${caption}`} onPress={onToggle} />
           </Box>
         )
